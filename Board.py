@@ -1,13 +1,10 @@
 import chess
 import numpy as np
 
-
 class Board(chess.Board):
 
     values = {'K': 900, 'Q': 90, 'R': 50, 'B': 30, 'N': 30, 'P': 10, \
               'k': -900, 'q': -90, 'r': -50, 'b': -30, 'n': -30, 'p': -10}
-
-    MOBILTY_WEIGHT = 1
 
     def value(self, mobility_weight=1, center_control_weight=1):
         val = 0
@@ -30,6 +27,8 @@ class Board(chess.Board):
             val += num_attackers * center_control_weight
 
         # pawn structure
+
+        return val
 
     
     @classmethod
@@ -68,8 +67,15 @@ class Board(chess.Board):
                 
 
 if __name__ == '__main__':
-    MAX_DEPTH = 5
     board = Board('rnbqkbnr/pp1ppppp/8/2p5/3P4/5N2/PPP1PPPP/RNBQKB1R w KQkq - 1 2')
-    value, best_path = Board.minimax(board, 3)
-    print(f'whites best move: {best_path}, {value=}')
+
+    for _ in range(10):
+        value, best_path = Board.minimax(board, 3)
+        best_move = best_path[-2]
+        board.push(best_move)
+
+        print(board)
+        print(f'{value=}')
+        print()
+
         
