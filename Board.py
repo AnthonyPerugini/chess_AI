@@ -7,14 +7,30 @@ class Board(chess.Board):
     values = {'K': 900, 'Q': 90, 'R': 50, 'B': 30, 'N': 30, 'P': 10, \
               'k': -900, 'q': -90, 'r': -50, 'b': -30, 'n': -30, 'p': -10}
 
-    def value(self):
+    MOBILTY_WEIGHT = 1
+
+    def value(self, mobility_weight=1, center_control_weight=1):
         val = 0
         piece_positions = self.fen().split(' ')[0]
         for piece in piece_positions:
             if piece not in Board.values.keys():
                 continue
             val += Board.values[piece] 
-        return val
+
+        # piece mobility
+        val += self.legal_moves.count() * mobility_weight
+
+        # king safety
+        
+        
+        # center control
+        for square in (chess.D4, chess.D5, chess.E4, chess.E5):
+            attackers = self.attackers(self.turn, square)
+            num_attackers = len(attackers)
+            val += num_attackers * center_control_weight
+
+        # pawn structure
+
     
     @classmethod
     def minimax(cls, board, depth, last_move=None): # returns a (value, best_move) tuple
