@@ -4,21 +4,25 @@ from collections import defaultdict
 
 class Board(chess.Board):
 
+    minimax_counter = 0
     plus_minus = {True: 1, False: -1}
     memo = defaultdict(int)
     values = {'K': 900, 'Q': 90, 'R': 50, 'B': 30, 'N': 30, 'P': 10, \
               'k': -900, 'q': -90, 'r': -50, 'b': -30, 'n': -30, 'p': -10}
 
     @classmethod
-    def reset_memo(cls):
-        cls.memo = defaultdict(int)
+    def reset_counter(cls):
+        cls.minimax_counter = 0
+
+    def serialize(self):
+        return self.fen().split(' ')[0]
 
 
     def value(self, mobility_weight=0.5, center_control_weight=0.5):
 
-        if not Board.memo[self.fen()]:
+        if not Board.memo[self.serialize()]:
             val = 0
-            pieces = self.fen().split(' ')[0]
+            pieces = self.serialize()
             for piece in pieces:
                 if piece not in Board.values.keys():
                     continue
@@ -58,13 +62,20 @@ class Board(chess.Board):
 
             # pawn structure
 
-            Board.memo[self.fen()] = val
+            Board.memo[self.serialize()] = val
 
-        return Board.memo[self.fen()]
+        return Board.memo[self.serialize()]
+
+
+    @classmethod
+    def reset_memo(cls):
+        cls.memo = defaultdict(int)
 
     
     @classmethod
     def minimax(cls, board, depth, a, b, last_move=None):
+
+        Board.minimax_counter += 1
 
         if depth == 0 or board.outcome():
             return board.value(), []
@@ -105,11 +116,12 @@ class Board(chess.Board):
 
 if __name__ == '__main__':
 
-    DEPTH = 4
+    DEPTH = 2
     MAXVAL = float('inf')
     MINVAL = float('-inf')
 
-    board = Board('rnbqkbnr/pp1ppppp/8/2p5/3P4/5N2/PPP1PPPP/RNBQKB1R w KQkq - 1 2')
+    # board = Board('rnbqkbnr/pp1ppppp/8/2p5/3P4/5N2/PPP1PPPP/RNBQKB1R w KQkq - 1 2')
+    board = Board()
 
     for _ in range(20):
         value, best_path = Board.minimax(board, DEPTH, MINVAL, MAXVAL)
@@ -117,6 +129,8 @@ if __name__ == '__main__':
         board.push(best_move)
         print(board)
         print(f'{board.value()=}')
+        print(board.minimax_counter)
+        board.reset_counter()
         print()
 
         
