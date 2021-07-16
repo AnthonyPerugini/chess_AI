@@ -1,6 +1,7 @@
 import chess
 import numpy as np
 from collections import defaultdict
+from Piece_Square_Tables import Piece_Tables
 
 class Board(chess.Board):
 
@@ -23,11 +24,17 @@ class Board(chess.Board):
         if not Board.memo[self.serialize()]:
             val = 0
             pieces = self.serialize()
-            for piece in pieces:
-                if piece not in Board.values.keys():
-                    continue
-                val += Board.values[piece] 
 
+            for pos, piece in self.piece_map().items():
+                piece = piece.symbol()
+
+                pos = -pos + 63
+                row, col = divmod(pos, 8)
+                col = -col + 7
+
+                val += Board.values[piece]
+                val += Piece_Tables[piece][row][col] * Board.plus_minus[self.turn]
+                
             # piece mobility for both players
             piece_mobility = self.legal_moves.count() * mobility_weight 
             val += piece_mobility * Board.plus_minus[self.turn]
@@ -116,7 +123,7 @@ class Board(chess.Board):
 
 if __name__ == '__main__':
 
-    DEPTH = 2
+    DEPTH = 4
     MAXVAL = float('inf')
     MINVAL = float('-inf')
 

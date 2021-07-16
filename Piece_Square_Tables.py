@@ -77,5 +77,5 @@ b_knight = [row[::-1] for row in w_knight[::-1]]
 b_pawn = [row[::-1] for row in w_pawn[::-1]]
 
 
-piece_tables = {'K': w_king, 'Q': w_queen, 'R': w_rook, 'B': w_bishop, 'N': w_knight, 'P': w_pawn, 
+Piece_Tables = {'K': w_king, 'Q': w_queen, 'R': w_rook, 'B': w_bishop, 'N': w_knight, 'P': w_pawn, 
                 'k': b_king, 'q': b_queen, 'r': b_rook, 'b': b_bishop, 'n': b_knight, 'p': b_pawn}
