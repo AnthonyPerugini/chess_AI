@@ -1,4 +1,3 @@
-                
 # WHITE PIECES
 
 w_king = [[-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0], 
@@ -79,3 +78,13 @@ b_pawn = [row[::-1] for row in w_pawn[::-1]]
 
 Piece_Tables = {'K': w_king, 'Q': w_queen, 'R': w_rook, 'B': w_bishop, 'N': w_knight, 'P': w_pawn, 
                 'k': b_king, 'q': b_queen, 'r': b_rook, 'b': b_bishop, 'n': b_knight, 'p': b_pawn}
+
+if __name__ == '__main__':
+    for key, table in Piece_Tables.items():
+        print(key)
+        for row in table:
+            print(row)
+        print('\n')
+
+        
+        

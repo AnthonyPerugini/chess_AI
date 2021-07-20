@@ -23,8 +23,6 @@ class Board(chess.Board):
 
         if not Board.memo[self.serialize()]:
             val = 0
-            pieces = self.serialize()
-
             for pos, piece in self.piece_map().items():
                 piece = piece.symbol()
 
@@ -47,12 +45,10 @@ class Board(chess.Board):
             
             
             # center control
-            center_control = 0
-
             for square in (chess.D4, chess.D5, chess.E4, chess.E5):
                 attackers = self.attackers(self.turn, square)
                 num_attackers = len(attackers)
-                center_control = num_attackers * center_control_weight 
+                center_control = num_attackers * center_control_weight
 
             val += center_control * Board.plus_minus[self.turn]
 
@@ -67,7 +63,7 @@ class Board(chess.Board):
 
             self.turn = not self.turn
 
-            # pawn structure
+            # pawn structure TODO
 
             Board.memo[self.serialize()] = val
 
@@ -85,6 +81,7 @@ class Board(chess.Board):
         Board.minimax_counter += 1
 
         if depth == 0 or board.outcome():
+
             return board.value(), []
 
         if board.turn:
@@ -122,7 +119,6 @@ class Board(chess.Board):
                 
 
 if __name__ == '__main__':
-
     DEPTH = 4
     MAXVAL = float('inf')
     MINVAL = float('-inf')

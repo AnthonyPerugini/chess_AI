@@ -13,6 +13,9 @@ while board.outcome() is None:
     best_move = best_moves[-1]
     board.push(best_move)
     print(board)
-    print(f'{board.value()=}\n')
+    print(f'{board.value()=}')
+    print(board.minimax_counter)
+    board.reset_counter()
+    print()
 
 
