@@ -6,6 +6,7 @@ from Piece_Square_Tables import Piece_Tables
 class Board(chess.Board):
 
     minimax_counter = 0
+    minimax_counter_2 = 0
     plus_minus = {True: 1, False: -1}
     memo = defaultdict(int)
     values = {'K': 900, 'Q': 90, 'R': 50, 'B': 30, 'N': 30, 'P': 10, \
@@ -15,13 +16,27 @@ class Board(chess.Board):
     def reset_counter(cls):
         cls.minimax_counter = 0
 
+    @classmethod
+    def reset_counter2(cls):
+        cls.minimax_counter_2 = 0
+
+    @classmethod
+    def reset_memo(cls):
+        cls.memo = defaultdict(int)
+
     def serialize(self):
         return self.fen().split(' ')[0]
 
 
-    def value(self, mobility_weight=0.5, center_control_weight=0.5):
+    def value(self, mobility_weight=1, center_control_weight=1):
+
+        if self.outcome():
+            d = {'1-0': float('inf'), '0-1': float('-inf'), '1/2-1/2': 0}
+            return d[self.outcome().result()]
 
         if not Board.memo[self.serialize()]:
+            Board.minimax_counter += 1
+
             val = 0
             for pos, piece in self.piece_map().items():
                 piece = piece.symbol()
@@ -67,21 +82,18 @@ class Board(chess.Board):
 
             Board.memo[self.serialize()] = val
 
+        else:
+            Board.minimax_counter_2 += 1
+
         return Board.memo[self.serialize()]
 
 
-    @classmethod
-    def reset_memo(cls):
-        cls.memo = defaultdict(int)
 
     
     @classmethod
     def minimax(cls, board, depth, a, b, last_move=None):
 
-        Board.minimax_counter += 1
-
         if depth == 0 or board.outcome():
-
             return board.value(), []
 
         if board.turn:
@@ -132,8 +144,10 @@ if __name__ == '__main__':
         board.push(best_move)
         print(board)
         print(f'{board.value()=}')
-        print(board.minimax_counter)
+        print(f'{board.minimax_counter=}')
+        print(f'{board.minimax_counter_2=}')
         board.reset_counter()
+        board.reset_counter2()
         print()
 
         

@@ -14,8 +14,10 @@ while board.outcome() is None:
     board.push(best_move)
     print(board)
     print(f'{board.value()=}')
-    print(board.minimax_counter)
+    print(f'{board.minimax_counter=}')
+    print(f'{board.minimax_counter_2=}')
     board.reset_counter()
+    board.reset_counter2()
     print()
 
 
