@@ -1,7 +1,7 @@
 import chess
 import numpy as np
 from collections import defaultdict
-from Piece_Square_Tables import Piece_Tables
+from Piece_Square_Tables import piece_tables, piece_values
 
 class Board(chess.Board):
 
@@ -9,8 +9,6 @@ class Board(chess.Board):
     minimax_counter_2 = 0
     plus_minus = {True: 1, False: -1}
     memo = defaultdict(int)
-    values = {'K': 900, 'Q': 90, 'R': 50, 'B': 30, 'N': 30, 'P': 10, \
-              'k': -900, 'q': -90, 'r': -50, 'b': -30, 'n': -30, 'p': -10}
 
     @classmethod
     def reset_counter(cls):
@@ -38,15 +36,19 @@ class Board(chess.Board):
             Board.minimax_counter += 1
 
             val = 0
-            for pos, piece in self.piece_map().items():
-                piece = piece.symbol()
+            for pos, Piece in self.piece_map().items():
+
+                piece = Piece.symbol()
+                color = Piece.color
 
                 pos = -pos + 63
                 row, col = divmod(pos, 8)
                 col = -col + 7
 
-                val += Board.values[piece]
-                val += Piece_Tables[piece][row][col] * Board.plus_minus[self.turn]
+                val += piece_values[piece]
+                piece_position_value = piece_tables[piece][row][col] * Board.plus_minus[color]
+                val += piece_position_value
+
                 
             # piece mobility for both players
             piece_mobility = self.legal_moves.count() * mobility_weight 
@@ -60,23 +62,14 @@ class Board(chess.Board):
             
             
             # center control
-            for square in (chess.D4, chess.D5, chess.E4, chess.E5):
-                attackers = self.attackers(self.turn, square)
-                num_attackers = len(attackers)
-                center_control = num_attackers * center_control_weight
+            # for square in (chess.D4, chess.D5, chess.E4, chess.E5):
+            #     attackers = self.attackers(self.turn, square)
+            #     opposing_attackers = self.attackers(not self.turn, square)
+            #     num_attackers = len(attackers) - len(opposing_attackers)
 
-            val += center_control * Board.plus_minus[self.turn]
+            #     center_control = num_attackers * center_control_weight
+            #     val += center_control * Board.plus_minus[self.turn]
 
-            self.turn = not self.turn
-
-            for square in (chess.D4, chess.D5, chess.E4, chess.E5):
-                attackers = self.attackers(self.turn, square)
-                num_attackers = len(attackers)
-                center_control = num_attackers * center_control_weight 
-
-            val += center_control * Board.plus_minus[self.turn]
-
-            self.turn = not self.turn
 
             # pawn structure TODO
 
@@ -131,23 +124,7 @@ class Board(chess.Board):
                 
 
 if __name__ == '__main__':
-    DEPTH = 4
-    MAXVAL = float('inf')
-    MINVAL = float('-inf')
-
-    # board = Board('rnbqkbnr/pp1ppppp/8/2p5/3P4/5N2/PPP1PPPP/RNBQKB1R w KQkq - 1 2')
-    board = Board()
-
-    for _ in range(20):
-        value, best_path = Board.minimax(board, DEPTH, MINVAL, MAXVAL)
-        best_move = best_path[-1]
-        board.push(best_move)
-        print(board)
-        print(f'{board.value()=}')
-        print(f'{board.minimax_counter=}')
-        print(f'{board.minimax_counter_2=}')
-        board.reset_counter()
-        board.reset_counter2()
-        print()
-
+    board = Board('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1')
+    print(board.value())
+    print(board)
         

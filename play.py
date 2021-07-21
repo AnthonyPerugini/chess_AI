@@ -16,6 +16,7 @@ while board.outcome() is None:
     print(f'{board.value()=}')
     print(f'{board.minimax_counter=}')
     print(f'{board.minimax_counter_2=}')
+    print(f'{len(board.memo)=}')
     board.reset_counter()
     board.reset_counter2()
     print()

@@ -76,15 +76,14 @@ b_knight = [row[::-1] for row in w_knight[::-1]]
 b_pawn = [row[::-1] for row in w_pawn[::-1]]
 
 
-Piece_Tables = {'K': w_king, 'Q': w_queen, 'R': w_rook, 'B': w_bishop, 'N': w_knight, 'P': w_pawn, 
+piece_tables = {'K': w_king, 'Q': w_queen, 'R': w_rook, 'B': w_bishop, 'N': w_knight, 'P': w_pawn, 
                 'k': b_king, 'q': b_queen, 'r': b_rook, 'b': b_bishop, 'n': b_knight, 'p': b_pawn}
 
+piece_values = {'K': 900, 'Q': 90, 'R': 50, 'B': 30, 'N': 30, 'P': 10, \
+                'k': -900, 'q': -90, 'r': -50, 'b': -30, 'n': -30, 'p': -10}
+
 if __name__ == '__main__':
-    for key, table in Piece_Tables.items():
+    for key, table in piece_tables.items():
         print(key)
         for row in table:
             print(row)
-        print('\n')
-
-        
-        
