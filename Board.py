@@ -5,18 +5,18 @@ from Piece_Square_Tables import piece_tables, piece_values
 
 class Board(chess.Board):
 
-    minimax_counter = 0
-    minimax_counter_2 = 0
+    new_board_states = 0
+    total_board_states = 0
     plus_minus = {True: 1, False: -1}
     memo = defaultdict(int)
 
     @classmethod
     def reset_counter(cls):
-        cls.minimax_counter = 0
+        cls.new_board_state = 0
 
     @classmethod
     def reset_counter2(cls):
-        cls.minimax_counter_2 = 0
+        cls.seen_board_state = 0
 
     @classmethod
     def reset_memo(cls):
@@ -33,7 +33,7 @@ class Board(chess.Board):
             return d[self.outcome().result()]
 
         if not Board.memo[self.serialize()]:
-            Board.minimax_counter += 1
+            Board.new_board_states += 1
 
             val = 0
             for pos, Piece in self.piece_map().items():
@@ -75,8 +75,7 @@ class Board(chess.Board):
 
             Board.memo[self.serialize()] = val
 
-        else:
-            Board.minimax_counter_2 += 1
+        Board.total_board_states += 1
 
         return Board.memo[self.serialize()]
 
@@ -99,9 +98,9 @@ class Board(chess.Board):
                     best_path = cur_path
                 board.pop()
 
-                if value >= b:
-                    break
                 a = max(a, value)
+                if a >= b:
+                    break
 
         else:
             value = float('inf')
@@ -113,9 +112,9 @@ class Board(chess.Board):
                     best_path = cur_path
                 board.pop()
 
-                if value <= a:
-                    break
                 b = min(b, value)
+                if b <= a:
+                    break
 
         if last_move:
             best_path.append(last_move)
