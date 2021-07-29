@@ -1,14 +1,18 @@
 import chess
-import numpy as np
 from collections import defaultdict
 from Piece_Square_Tables import piece_tables, piece_values
 
 class Board(chess.Board):
 
+    MAXVAL = float('inf')
+    MINVAL = float('-inf')
+    DEPTH = 4
+
     new_board_states = 0
     total_board_states = 0
     plus_minus = {True: 1, False: -1}
     memo = defaultdict(int)
+    outcome_dict = {'1-0': float('inf'), '0-1': float('-inf'), '1/2-1/2': 0}
 
     @classmethod
     def reset_counter(cls):
@@ -25,12 +29,30 @@ class Board(chess.Board):
     def serialize(self):
         return self.fen().split(' ')[0]
 
+    def show_legal_moves(self):
+        moves = [move for move in self.legal_moves]
+        for move in moves:
+            print(move)
+
+    def generate_move_from_uci(self):
+        uci = input('Enter a move (or type help for options): ')
+        if uci == 'help':
+            self.show_legal_moves()
+        try:
+            move = chess.Move.from_uci(uci)
+        except ValueError:
+            return False
+
+        if move not in self.legal_moves:
+            return False
+
+        return move
+
 
     def value(self, mobility_weight=1, center_control_weight=1):
 
         if self.outcome():
-            d = {'1-0': float('inf'), '0-1': float('-inf'), '1/2-1/2': 0}
-            return d[self.outcome().result()]
+            return Board.outcome_dict[self.outcome().result()]
 
         if not Board.memo[self.serialize()]:
             Board.new_board_states += 1
@@ -83,7 +105,14 @@ class Board(chess.Board):
 
     
     @classmethod
-    def minimax(cls, board, depth, a, b, last_move=None):
+    def minimax(cls, board, depth=None, a=None, b=None, last_move=None):
+        
+        if depth is None:
+            depth = cls.DEPTH
+        if a is None:
+            a = cls.MINVAL
+        if b is None:
+            b = cls.MAXVAL
 
         if depth == 0 or board.outcome():
             return board.value(), []
