@@ -2,10 +2,12 @@ from Board import Board
 from random import choice
 
 class Game():
-    def __init__(self, self_play=True):
+    def __init__(self, self_play=True, troubleshooting=False):
         self.self_play = self_play
-        self.choose_side()
-        self.new_game()
+        self.troubleshooting = troubleshooting
+        if not self_play:
+            self.choose_side()
+        self.new_game('r1b1k2r/1ppp1ppp/p1n2n2/q7/8/1R2BN2/P1P1BPPP/3Q1K1R w Kkq - 0 1')
         print(self.board, '\n')
 
     def new_game(self, starting_fen=None):
@@ -23,7 +25,6 @@ class Game():
         else:
             print('bad monkey')
             self.choose_side()
-
 
     def play(self):
 
@@ -55,12 +56,14 @@ class Game():
                         
             self.board.push(move)
             print(self.board)
-            if self.self_play:
+            if self.troubleshooting:
                 print(f'{self.board.value()=}')
                 print(f'{self.board.new_board_states=}')
                 print(f'{self.board.total_board_states=}')
                 print(f'{len(self.board.memo)=}')
             print()
+            self.board.reset_counter()
+            self.board.reset_counter2()
             
 
         winner = {'1-0': 'White wins', '0-1': 'Black wins', '1/2-1/2': 'Game ended in a draw'}[self.board.outcome().result()]

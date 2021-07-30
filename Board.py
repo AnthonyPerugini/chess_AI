@@ -6,21 +6,21 @@ class Board(chess.Board):
 
     MAXVAL = float('inf')
     MINVAL = float('-inf')
-    DEPTH = 4
+    DEPTH = 3
 
     new_board_states = 0
     total_board_states = 0
-    plus_minus = {True: 1, False: -1}
     memo = defaultdict(int)
+    plus_minus = {True: 1, False: -1}
     outcome_dict = {'1-0': float('inf'), '0-1': float('-inf'), '1/2-1/2': 0}
 
     @classmethod
     def reset_counter(cls):
-        cls.new_board_state = 0
+        cls.new_board_states = 0
 
     @classmethod
     def reset_counter2(cls):
-        cls.seen_board_state = 0
+        cls.total_board_states = 0
 
     @classmethod
     def reset_memo(cls):
@@ -35,8 +35,8 @@ class Board(chess.Board):
             print(move)
 
     def generate_move_from_uci(self):
-        uci = input('Enter a move (or type help for options): ')
-        if uci == 'help':
+        uci = input("Enter a move or 'help': ")
+        if uci.lower() == 'help':
             self.show_legal_moves()
         try:
             move = chess.Move.from_uci(uci)
@@ -84,13 +84,13 @@ class Board(chess.Board):
             
             
             # center control
-            # for square in (chess.D4, chess.D5, chess.E4, chess.E5):
-            #     attackers = self.attackers(self.turn, square)
-            #     opposing_attackers = self.attackers(not self.turn, square)
-            #     num_attackers = len(attackers) - len(opposing_attackers)
+            for square in (chess.D4, chess.D5, chess.E4, chess.E5):
+                attackers = self.attackers(self.turn, square)
+                opposing_attackers = self.attackers(not self.turn, square)
+                num_attackers = len(attackers) - len(opposing_attackers)
 
-            #     center_control = num_attackers * center_control_weight
-            #     val += center_control * Board.plus_minus[self.turn]
+                center_control = num_attackers * center_control_weight
+                val += center_control * Board.plus_minus[self.turn]
 
 
             # pawn structure TODO
@@ -115,9 +115,10 @@ class Board(chess.Board):
             b = cls.MAXVAL
 
         if depth == 0 or board.outcome():
-            return board.value(), []
+            value = board.value()
+            best_path = []
 
-        if board.turn:
+        elif board.turn:
             value = float('-inf')
             for move in board.legal_moves:
                 board.push(move)
