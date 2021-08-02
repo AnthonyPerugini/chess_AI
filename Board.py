@@ -6,7 +6,7 @@ class Board(chess.Board):
 
     MAXVAL = float('inf')
     MINVAL = float('-inf')
-    DEPTH = 3
+    DEPTH = 4
 
     new_board_states = 0
     total_board_states = 0
@@ -49,7 +49,7 @@ class Board(chess.Board):
         return move
 
 
-    def value(self, mobility_weight=1, center_control_weight=1):
+    def value(self, mobility_weight=0.5, center_control_weight=2):
 
         if self.outcome():
             return Board.outcome_dict[self.outcome().result()]
@@ -71,6 +71,7 @@ class Board(chess.Board):
                 piece_position_value = piece_tables[piece][row][col] * Board.plus_minus[color]
                 val += piece_position_value
 
+
                 
             # piece mobility for both players
             piece_mobility = self.legal_moves.count() * mobility_weight 
@@ -81,7 +82,6 @@ class Board(chess.Board):
             self.turn = not self.turn
             
             # king safety
-            
             
             # center control
             for square in (chess.D4, chess.D5, chess.E4, chess.E5):

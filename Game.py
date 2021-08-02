@@ -7,14 +7,13 @@ class Game():
         self.troubleshooting = troubleshooting
         if not self_play:
             self.choose_side()
-        self.new_game('r1b1k2r/1ppp1ppp/p1n2n2/q7/8/1R2BN2/P1P1BPPP/3Q1K1R w Kkq - 0 1')
-        print(self.board, '\n')
 
     def new_game(self, starting_fen=None):
         if starting_fen is None:
             self.board = Board()
         else:
             self.board = Board(starting_fen)
+        print(self.board, '\n')
 
     def choose_side(self):
         side = int(input('Choose 1 to play as white, or 0 to play as black: '))
