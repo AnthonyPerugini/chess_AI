@@ -2,11 +2,13 @@ from Board import Board
 from random import choice
 
 class Game():
-    def __init__(self, self_play=True, troubleshooting=False):
+    def __init__(self, self_play=True, troubleshooting=True):
         self.self_play = self_play
         self.troubleshooting = troubleshooting
         if not self_play:
             self.choose_side()
+        else:
+            self.computer_side = None
 
     def new_game(self, starting_fen=None):
         if starting_fen is None:
@@ -25,6 +27,9 @@ class Game():
             print('bad monkey')
             self.choose_side()
 
+    def generate_random_move(self, board):
+        return next(iter(board.legal_moves))
+
     def play(self):
 
         while self.board.outcome() is None:
@@ -34,9 +39,8 @@ class Game():
                 value, best_moves = Board.minimax(self.board)
                 try:
                     move = best_moves[-1]
-                except:
-                    move = choice(self.board.legal_moves)
-
+                except IndexError:
+                    move = self.generate_random_move(self.board)
 
             # Human vs Computer
             else:
@@ -44,8 +48,8 @@ class Game():
                     value, best_moves = Board.minimax(self.board)
                     try:
                         move = best_moves[-1]
-                    except:
-                        move = choice(self.board.legal_moves)
+                    except IndexError:
+                        move = self.generate_random_move(self.board)
 
                 # humans move
                 else:
@@ -55,20 +59,18 @@ class Game():
                         
             self.board.push(move)
             print(self.board)
-            if self.troubleshooting:
+
+            if self.troubleshooting and self.board.turn != self.computer_side:
                 print(f'{self.board.value()=}')
                 print(f'{self.board.new_board_states=}')
                 print(f'{self.board.total_board_states=}')
                 print(f'{len(self.board.memo)=}')
             print()
-            self.board.reset_counter()
-            self.board.reset_counter2()
+            self.board.reset_new_board_states()
+            self.board.reset_total_board_states()
             
 
         winner = {'1-0': 'White wins', '0-1': 'Black wins', '1/2-1/2': 'Game ended in a draw'}[self.board.outcome().result()]
         print(f'Game over! {winner}!')
         
 
-
-            
-        

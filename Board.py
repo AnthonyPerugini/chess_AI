@@ -6,7 +6,7 @@ class Board(chess.Board):
 
     MAXVAL = float('inf')
     MINVAL = float('-inf')
-    DEPTH = 4
+    DEPTH = 3
 
     new_board_states = 0
     total_board_states = 0
@@ -15,11 +15,11 @@ class Board(chess.Board):
     outcome_dict = {'1-0': float('inf'), '0-1': float('-inf'), '1/2-1/2': 0}
 
     @classmethod
-    def reset_counter(cls):
+    def reset_new_board_states(cls):
         cls.new_board_states = 0
 
     @classmethod
-    def reset_counter2(cls):
+    def reset_total_board_states(cls):
         cls.total_board_states = 0
 
     @classmethod
@@ -36,8 +36,18 @@ class Board(chess.Board):
 
     def generate_move_from_uci(self):
         uci = input("Enter a move or 'help': ")
+
         if uci.lower() == 'help':
             self.show_legal_moves()
+        if uci.lower() == 'im a filthy cheater':
+            try:
+                self.pop()
+                self.pop()
+            except IndexError:
+                pass
+            print(self)
+            return False
+
         try:
             move = chess.Move.from_uci(uci)
         except ValueError:
@@ -84,13 +94,13 @@ class Board(chess.Board):
             # king safety
             
             # center control
-            for square in (chess.D4, chess.D5, chess.E4, chess.E5):
-                attackers = self.attackers(self.turn, square)
-                opposing_attackers = self.attackers(not self.turn, square)
-                num_attackers = len(attackers) - len(opposing_attackers)
+            # for square in (chess.D4, chess.D5, chess.E4, chess.E5):
+            #     attackers = self.attackers(self.turn, square)
+            #     opposing_attackers = self.attackers(not self.turn, square)
+            #     num_attackers = len(attackers) - len(opposing_attackers)
 
-                center_control = num_attackers * center_control_weight
-                val += center_control * Board.plus_minus[self.turn]
+            #     center_control = num_attackers * center_control_weight
+            #     val += center_control * Board.plus_minus[self.turn]
 
 
             # pawn structure TODO
@@ -114,9 +124,10 @@ class Board(chess.Board):
         if b is None:
             b = cls.MAXVAL
 
-        if depth == 0 or board.outcome():
+        best_path = []
+
+        if depth == 0 or board.outcome() or board.legal_moves.count() == 0:
             value = board.value()
-            best_path = []
 
         elif board.turn:
             value = float('-inf')
@@ -153,7 +164,7 @@ class Board(chess.Board):
                 
 
 if __name__ == '__main__':
-    board = Board('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1')
-    print(board.value())
+    board = Board('r1b1k1nr/ppp2ppp/2p1p3/2q5/4P3/3B1N2/P1PB1PPP/R2QK2R w KQkq - 0 1')
+    board.push(move)
     print(board)
         
