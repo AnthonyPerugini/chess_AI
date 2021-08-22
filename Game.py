@@ -2,7 +2,7 @@ from Board import Board
 from random import choice
 
 class Game():
-    def __init__(self, self_play=True, troubleshooting=True):
+    def __init__(self, self_play=False, troubleshooting=False):
         self.self_play = self_play
         self.troubleshooting = troubleshooting
         if not self_play:
@@ -67,7 +67,6 @@ class Game():
                 print(f'{len(self.board.memo)=}')
             print()
             self.board.reset_new_board_states()
-            self.board.reset_total_board_states()
             
 
         winner = {'1-0': 'White wins', '0-1': 'Black wins', '1/2-1/2': 'Game ended in a draw'}[self.board.outcome().result()]

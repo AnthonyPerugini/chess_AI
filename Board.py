@@ -6,10 +6,11 @@ class Board(chess.Board):
 
     MAXVAL = float('inf')
     MINVAL = float('-inf')
-    DEPTH = 3
+    DEPTH = 4
 
     new_board_states = 0
     total_board_states = 0
+
     memo = defaultdict(int)
     plus_minus = {True: 1, False: -1}
     outcome_dict = {'1-0': float('inf'), '0-1': float('-inf'), '1/2-1/2': 0}
