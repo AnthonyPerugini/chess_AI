@@ -92,18 +92,16 @@ class Board(chess.Board):
             val += piece_mobility * Board.plus_minus[self.turn]
             self.turn = not self.turn
             
-            # king safety
-            
             # center control
-            # for square in (chess.D4, chess.D5, chess.E4, chess.E5):
-            #     attackers = self.attackers(self.turn, square)
-            #     opposing_attackers = self.attackers(not self.turn, square)
-            #     num_attackers = len(attackers) - len(opposing_attackers)
+            for square in (chess.D4, chess.D5, chess.E4, chess.E5):
+                attackers = self.attackers(self.turn, square)
+                opposing_attackers = self.attackers(not self.turn, square)
+                num_attackers = len(attackers) - len(opposing_attackers)
 
-            #     center_control = num_attackers * center_control_weight
-            #     val += center_control * Board.plus_minus[self.turn]
+                center_control = num_attackers * center_control_weight
+                val += center_control * Board.plus_minus[self.turn]
 
-
+            # king safety
             # pawn structure TODO
 
             Board.memo[self.serialize()] = val
