@@ -1,6 +1,8 @@
 import chess
+import pickle
 from collections import defaultdict
 from Piece_Square_Tables import piece_tables, piece_values
+
 
 class Board(chess.Board):
 
@@ -109,8 +111,6 @@ class Board(chess.Board):
         Board.total_board_states += 1
 
         return Board.memo[self.serialize()]
-
-
 
     
     @classmethod

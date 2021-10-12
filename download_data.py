@@ -4,6 +4,8 @@ import urllib.request
 import os
 import zipfile
 
+# 398744 games
+
 # download raw
 base_url = 'http://www.pgnmentor.com/'
 
@@ -32,12 +34,14 @@ for link in links:
     count += 1
 
 # process raw
+count = 1
 for root, dirs, files in os.walk('raw/players/'):
     for file in files:
         filename = file.split('.')[0] + '.pgn'
         if os.path.exists(os.path.join(cwd, 'processed', f'{filename}')):
             print(f'{file} already processed, skipping...')
-            continue
-        with zipfile.ZipFile(os.path.join(cwd, 'raw', 'players', file), "r") as zip_ref:
-            zip_ref.extractall(os.path.join(cwd, 'processed'))
-            print(f'Successfully unzipped {file}!')
+        else:
+            with zipfile.ZipFile(os.path.join(cwd, 'raw', 'players', file), "r") as zip_ref:
+                zip_ref.extractall(os.path.join(cwd, 'processed'))
+                print(f'Successfully unzipped {file}! [{count} / {len(links)}]')
+        count += 1
