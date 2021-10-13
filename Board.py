@@ -1,6 +1,8 @@
 import chess
+import pickle
 from collections import defaultdict
 from Piece_Square_Tables import piece_tables, piece_values
+
 
 class Board(chess.Board):
 
@@ -92,18 +94,16 @@ class Board(chess.Board):
             val += piece_mobility * Board.plus_minus[self.turn]
             self.turn = not self.turn
             
-            # king safety
-            
             # center control
-            # for square in (chess.D4, chess.D5, chess.E4, chess.E5):
-            #     attackers = self.attackers(self.turn, square)
-            #     opposing_attackers = self.attackers(not self.turn, square)
-            #     num_attackers = len(attackers) - len(opposing_attackers)
+            for square in (chess.D4, chess.D5, chess.E4, chess.E5):
+                attackers = self.attackers(self.turn, square)
+                opposing_attackers = self.attackers(not self.turn, square)
+                num_attackers = len(attackers) - len(opposing_attackers)
 
-            #     center_control = num_attackers * center_control_weight
-            #     val += center_control * Board.plus_minus[self.turn]
+                center_control = num_attackers * center_control_weight
+                val += center_control * Board.plus_minus[self.turn]
 
-
+            # king safety
             # pawn structure TODO
 
             Board.memo[self.serialize()] = val
@@ -111,8 +111,6 @@ class Board(chess.Board):
         Board.total_board_states += 1
 
         return Board.memo[self.serialize()]
-
-
 
     
     @classmethod
