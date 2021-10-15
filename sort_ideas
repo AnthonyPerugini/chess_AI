@@ -1,12 +1,11 @@
 thoughts for how to sort chess moves:
-
-- pawn captures piece
-- moves where a pawn attack a piece
-- captures
-- castling
-- moves that centralize pieces
-- queen moves
+	- pawn captures piece
+	- moves where a pawn attack a piece
+	- captures
+	- castling
+	- moves that centralize pieces
+	- queen moves
 
 
 OTHER TODOs:
-- deal with 3 move repeats
+	- deal with 3 move repeats
