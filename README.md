@@ -29,10 +29,31 @@ representing a board position in the smallest amount of space:
 
 	
 how many outputs from the NN?
-	1972 possible moves
-	1882 possible moves for each color (-enemy pawn promotions, -enemy castling)
+	1972 possible moves for both colors combined
+
+	1882 possible moves for each color
+		+ queen moves: 1456
+		+ knight moves: 336
+		+ pawn promotions: 176 (88 for each color)
+		+ castling: 4 (2 for each color)
+
+
 	1 extra output for [-1,1] board evaluation?
 
-	
 
+generate all possible moves and a map (0: a1a2, 1:a1a3, ...)
+	all_moves = []
+	moves_lookup = dict()
+	position = 0
+
+	for square in [a1-h8]:
+		for each piece in [queen, knight, pawn_promotions, castling]:
+			board = Board() with piece on square
+			generate endsquares
+			for endsquare in endsquares:
+				add (square -> endsquare) to all_moves
+				add d[square -> endsquare] = position
+				position += 1
+
+		
 
