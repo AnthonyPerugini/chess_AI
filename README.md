@@ -57,3 +57,14 @@ generate all possible moves and a map (0: a1a2, 1:a1a3, ...)
 
 		
 
+thoughts for how to sort chess moves:
+	- pawn captures piece
+	- moves where a pawn attack a piece
+	- captures
+	- castling
+	- moves that centralize pieces
+	- queen moves
+
+
+OTHER TODOs:
+	- deal with 3 move repeats
